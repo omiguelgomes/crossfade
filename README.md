@@ -4,6 +4,10 @@ A daily music puzzle. You get two artists and connect them by naming songs, wher
 
 Live: https://crossfade-seven.vercel.app
 
+<p align="center">
+  <img src="docs/demo.webp" alt="Solving the daily puzzle: chaining Ludacris to Offset one collaboration at a time" width="320">
+</p>
+
 ## How it works
 
 Each puzzle has a start artist and a target artist. From the start you write a song that features another artist on the graph, and that artist becomes your new position. Keep going until you reach the target. The shortest possible chain is the par; using extra songs or asking for hints lowers your score, and a flawless run scores 100.
@@ -31,6 +35,12 @@ The leaderboard and artist photos are optional. Without the Redis credentials th
 ## Theming
 
 Dark is the default. Colours are CSS custom properties, so switching theme swaps one set of values instead of restyling components. A small blocking script in the document head applies a saved light preference before first paint, so there is no flash on load. The toggle animation and the dark-to-light cross-fade both respect `prefers-reduced-motion`.
+
+<p align="center">
+  <img src="docs/board-dark.webp" alt="A solved puzzle in dark theme" width="300">
+  &nbsp;&nbsp;
+  <img src="docs/board-light.webp" alt="The same puzzle in light theme" width="300">
+</p>
 
 ## Running locally
 
