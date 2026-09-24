@@ -1,26 +1,149 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/*
+  Crossfade — two themes, one accent language. Dark is the default (an
+  "after-hours" music game); light is the clean daytime alternative. The two
+  functional accents carry meaning across the whole app:
+    start  = coral   (the artist you begin from)
+    end    = teal    (the destination artist)
+  Every surface reads from the --color-* tokens, so the whole app flips theme
+  by swapping the palette under :root / [data-theme="light"].
+*/
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --color-bg: var(--c-bg);
+  --color-surface: var(--c-surface);
+  --color-surface-2: var(--c-surface-2);
+  --color-line: var(--c-line);
+  --color-ink: var(--c-ink);
+  --color-muted: var(--c-muted);
+  --color-faint: var(--c-faint);
+
+  --color-coral: var(--c-coral);
+  --color-coral-soft: var(--c-coral-soft);
+  --color-teal: var(--c-teal);
+  --color-teal-soft: var(--c-teal-soft);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Dark — the default theme. Warm near-black neutrals, bright accents. */
+:root {
+  color-scheme: dark;
+
+  --c-bg: #0a0a0d;
+  --c-surface: #191921;
+  --c-surface-2: #26262f;
+  --c-line: #383843;
+  --c-ink: #f6f6f8;
+  --c-muted: #adadb8;
+  --c-faint: #7c7c88;
+
+  --c-coral: #ff5d47;
+  --c-coral-soft: #ff8b7a;
+  --c-teal: #2fd8c2;
+  --c-teal-soft: #7fe9dc;
+
+  /* One neutral wash of ambient light from above — physical, not a colour mesh. */
+  --body-wash: radial-gradient(130% 60% at 50% -20%, rgba(255, 255, 255, 0.035), transparent 62%);
+  --chrome-shadow: 0 1px 0 rgba(255, 255, 255, 0.04), 0 8px 24px -18px rgba(0, 0, 0, 0.85);
+}
+
+/* Light — clean paper-white, accents deep enough to read on white. */
+[data-theme="light"] {
+  color-scheme: light;
+
+  --c-bg: #f6f5f2;
+  --c-surface: #ffffff;
+  --c-surface-2: #efeee9;
+  --c-line: #e4e2db;
+  --c-ink: #1b1b1f;
+  --c-muted: #62626b;
+  --c-faint: #9a9aa2;
+
+  --c-coral: #e5493a;
+  --c-coral-soft: #c5382b;
+  --c-teal: #0e988a;
+  --c-teal-soft: #0a7d70;
+
+  --body-wash: none;
+  --chrome-shadow: 0 1px 12px -8px rgba(20, 20, 30, 0.25);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-optical-sizing: auto;
+  background-image: var(--body-wash);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Numbers and step counters read as mono for that scoreboard feel */
+.tabular {
+  font-family: var(--font-mono), monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/*
+  Floating translucent chrome (header). A real material: content scrolls under
+  it and a soft hairline plus a faint shadow separate it from what passes
+  beneath, rather than a hard 1px rule.
+*/
+.app-chrome {
+  background: color-mix(in srgb, var(--color-bg) 72%, transparent);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--color-line);
+  box-shadow: var(--chrome-shadow);
+}
+
+/* Thin, quiet scrollbars inside the search dropdown */
+.quiet-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line) transparent;
+}
+
+/*
+  Ease the whole-page colour change during a theme switch only (Apple: ease
+  dark<->light transitions). Applied as a class for ~400ms around the toggle so
+  it never lags ordinary interactions. Scoped to no-preference so reduced-motion
+  users get an instant swap.
+*/
+@media (prefers-reduced-motion: no-preference) {
+  .theme-transition,
+  .theme-transition *,
+  .theme-transition *::before,
+  .theme-transition *::after {
+    transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease,
+      box-shadow 0.4s ease, fill 0.4s ease !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Frostier, solid-er surfaces when the user asks for less transparency. */
+@media (prefers-reduced-transparency: reduce) {
+  .app-chrome {
+    background: var(--color-bg);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+/* Near-solid, clearly bordered chrome under increased-contrast. */
+@media (prefers-contrast: more) {
+  .app-chrome {
+    background: var(--color-bg);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-bottom-color: var(--color-muted);
+  }
 }
